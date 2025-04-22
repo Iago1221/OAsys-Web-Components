@@ -87,7 +87,7 @@ class GridFormComponent {
     cloneFieldData(originalField, rowIndex) {
         // Cria uma cópia profunda dos dados do campo
         const clonedData = JSON.parse(JSON.stringify(originalField));
-        clonedData.field = `${this.name}[${rowIndex}]${clonedData.field}`;
+        clonedData.field = `${this.name}[${rowIndex}][${clonedData.field}]`;
 
         return {component: clonedData.component, [clonedData.component]: clonedData};
     }
