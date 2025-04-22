@@ -1,5 +1,6 @@
 class GridFormComponent {
     constructor(oData) {
+        this.name = oData.GridFormComponent.name;
         this.title = oData.GridFormComponent.title;
         this.layout = oData.GridFormComponent.layout || 'form-two-columns';
         this.fields = oData.GridFormComponent.fields.map(field =>
@@ -50,7 +51,7 @@ class GridFormComponent {
                 fieldContainer.classList.add('grid-form-field');
 
                 // Clonagem correta do campo
-                const fieldData = this.cloneFieldData(originalField);
+                const fieldData = this.cloneFieldData(originalField, i);
                 const fieldClone = new (App.getInstance().getCallableComponent(fieldData.component))(fieldData);
 
                 fieldContainer.appendChild(fieldClone.render());
@@ -83,10 +84,10 @@ class GridFormComponent {
         }
     }
 
-    cloneFieldData(originalField) {
+    cloneFieldData(originalField, rowIndex) {
         // Cria uma cópia profunda dos dados do campo
         const clonedData = JSON.parse(JSON.stringify(originalField));
-        clonedData.field = `${clonedData.field}[]`;
+        clonedData.field = `${this.name}[${rowIndex}]${clonedData.field}`;
 
         return {component: clonedData.component, [clonedData.component]: clonedData};
     }
