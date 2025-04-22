@@ -54,31 +54,30 @@ class FormComponent {
 
         const form = event.target;
         const formData = new FormData();
-        const inputs = form.querySelectorAll('input, select');
         let sObrigatoriosNaoPreenchidos = '';
+
+        const inputs = form.querySelectorAll('[name]');
 
         inputs.forEach(input => {
             const name = input.name;
             const label = document.querySelector(`label[for="${name}"]`);
-            const sText =  (label && label.textContent) || name;
+            const sText = (label && label.textContent) || name;
 
-            // validação de obrigatórios
             if (input.hasAttribute('required') && !input.value) {
                 sObrigatoriosNaoPreenchidos += `O campo ${sText} é obrigatório <br>`;
             }
 
-            // se for arquivo, deixa o FormData cuidar
             if (input.type === 'file') {
                 const files = input.files;
                 if (files.length > 0) {
                     formData.append(name, files[0]);
                 }
             } else {
-                // campos com "pai/filho" viram name="pai[filho]"
                 if (name.includes('/')) {
                     const [parentKey, childKey] = name.split('/');
                     formData.append(`${parentKey}[${childKey}]`, input.value);
                 } else {
+                    // Aqui está o segredo: `append` permite múltiplos campos com mesmo nome
                     formData.append(name, input.value);
                 }
             }
