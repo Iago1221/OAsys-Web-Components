@@ -1,17 +1,18 @@
 class SuggestFieldComponent {
     constructor(data) {
-        this.name = data.SuggestFieldComponent.name;
+        this.component = 'SuggestFieldComponent';
+        this.field = data.SuggestFieldComponent.name;
         this.route = data.SuggestFieldComponent.route;
-        this.field = new FormFieldComponent(data.SuggestFieldComponent.field);
+        this.idField = new FormFieldComponent(data.SuggestFieldComponent.idField);
         this.descriptionField = new FormFieldComponent(data.SuggestFieldComponent.descriptionField);
         this.label = data.SuggestFieldComponent.label;
         this.bDisabled = data.SuggestFieldComponent.disabled;
 
-        this.fieldName = this.field.field.replace(this.name + '\/', '');
-        this.descriptionFieldName = this.descriptionField.field.replace(this.name + '\/', '');
+        this.fieldName = this.idField.field.replace(this.field + '\/', '');
+        this.descriptionFieldName = this.descriptionField.field.replace(this.field + '\/', '');
 
         if (this.bDisabled) {
-            this.field.disabled = true;
+            this.idField.disabled = true;
             this.descriptionField.disabled = true;
         }
 
@@ -34,11 +35,11 @@ class SuggestFieldComponent {
         const label = document.createElement('label');
         label.textContent = this.label;
 
-        if (this.field.required) {
+        if (this.idField.required) {
             label.classList.add('label-required');
         }
 
-        label.setAttribute('for', this.field.field);
+        label.setAttribute('for', this.idField.field);
         container.appendChild(label);
 
         const inputContainer = document.createElement('div');
@@ -47,7 +48,7 @@ class SuggestFieldComponent {
 
         const fieldContainer = document.createElement('div');
         fieldContainer.style.width = '20%';
-        const fieldElement = this.field.render();
+        const fieldElement = this.idField.render();
         fieldContainer.appendChild(fieldElement);
         inputContainer.appendChild(fieldContainer);
 
@@ -100,7 +101,7 @@ class SuggestFieldComponent {
                 return;
             }
 
-            this.field.element.value = null;
+            this.idField.element.value = null;
             this.descriptionField.element.value = null;
         });
 
@@ -162,7 +163,6 @@ class SuggestFieldComponent {
     }
 
     closeWindowCallback(windowComponent, componentId, fatherId) {
-        console.log(windowComponent)
         const windowElement = windowComponent.element;
 
         windowElement.remove();
@@ -227,7 +227,7 @@ class SuggestFieldComponent {
         const fieldValue = row.querySelector(`td[data-field="${this.fieldName}"]`)?.textContent || '';
         const descriptionValue = row.querySelector(`td[data-field="${this.descriptionFieldName}"]`)?.textContent || '';
 
-        this.field.element.value = fieldValue;
+        this.idField.element.value = fieldValue;
         this.descriptionField.element.value = descriptionValue;
 
         if (this.callbacks.onSelect) {
@@ -261,7 +261,7 @@ class SuggestFieldComponent {
             .then(response => response.json())
             .then(data => {
                 if (data && data[this.fieldName] && data[this.descriptionFieldName]) {
-                    this.field.element.value = data[this.fieldName];
+                    this.idField.element.value = data[this.fieldName];
                     this.descriptionField.element.value = data[this.descriptionFieldName];
 
                     if (this.callbacks.onFetch) {
@@ -270,7 +270,7 @@ class SuggestFieldComponent {
                     return;
                 }
 
-                this.field.element.value = null;
+                this.idField.element.value = null;
                 this.descriptionField.element.value = null;
             })
             .catch(error => {
@@ -320,7 +320,7 @@ class SuggestFieldComponent {
             });
 
             li.addEventListener('click', () => {
-                this.field.element.value = item[this.fieldName];
+                this.idField.element.value = item[this.fieldName];
                 this.descriptionField.element.value = item[this.descriptionFieldName];
                 this.hideSuggestions();
 

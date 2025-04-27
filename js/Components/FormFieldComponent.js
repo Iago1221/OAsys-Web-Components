@@ -1,14 +1,14 @@
 class FormFieldComponent {
     constructor(oData) {
         this.component = 'FormFieldComponent';
-        this.field = oData.FormFieldComponent.field;
-        this.label = oData.FormFieldComponent.label;
-        this.type = oData.FormFieldComponent.type;
-        this.options = oData.FormFieldComponent.options;
-        this.required = oData.FormFieldComponent.required;
-        this.disabled = oData.FormFieldComponent.disabled;
-        this.value = oData.FormFieldComponent.value;
-        this.renderLabel = oData.FormFieldComponent.renderLabel;
+        this.field = oData.FormFieldComponent ? oData.FormFieldComponent.field : oData.field;
+        this.label = oData.FormFieldComponent ? oData.FormFieldComponent.label : oData.label;
+        this.type = oData.FormFieldComponent ? oData.FormFieldComponent.type : oData.type;
+        this.options = oData.FormFieldComponent ? oData.FormFieldComponent.options : oData.options;
+        this.required = oData.FormFieldComponent ? oData.FormFieldComponent.required : oData.required;
+        this.disabled = oData.FormFieldComponent ? oData.FormFieldComponent.disabled : oData.disabled;
+        this.value = oData.FormFieldComponent ? oData.FormFieldComponent.value : oData.value;
+        this.renderLabel = oData.FormFieldComponent ? oData.FormFieldComponent.renderLabel : oData.renderLabel;
         this.element = null;
     }
 

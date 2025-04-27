@@ -37,30 +37,58 @@ class GridFormComponent {
         return container;
     }
 
-    renderRows(container) {
-        container.innerHTML = '';
+    captureCurrentValues(container) {
+        const data = {};
+    
+        container.querySelectorAll('.grid-form-row').forEach(row => {
+            const rowIndex = row.dataset.rowIndex;
+            data[rowIndex] = {};
+    
+            row.querySelectorAll('.grid-form-field input, .grid-form-field select, .grid-form-field textarea').forEach(input => {
+                const name = input.name;
+                const value = input.value;
+                data[rowIndex][name] = value;
+            });
+        });
+    
+        return data;
+    }    
 
+    renderRows(container) {
+        const savedValues = this.captureCurrentValues(container);
+    
+        container.innerHTML = '';
+    
         for (let i = 0; i < this.rows; i++) {
             const row = document.createElement('div');
             row.classList.add('grid-form-row');
             row.dataset.rowIndex = i;
-
-            // Campos
+    
             this.fields.forEach(originalField => {
                 const fieldContainer = document.createElement('div');
                 fieldContainer.classList.add('grid-form-field');
-
-                // Clonagem correta do campo
+    
                 const fieldData = this.cloneFieldData(originalField, i);
                 const fieldClone = new (App.getInstance().getCallableComponent(fieldData.component))(fieldData);
+    
+                const savedRow = savedValues[i];
+                if (savedRow) {
+                    const savedValue = savedRow[fieldClone.field];
+                    if (savedValue !== undefined) {
+                        fieldClone.value = savedValue;
+                    }
+                }
 
-                fieldContainer.appendChild(fieldClone.render());
+                const fieldElement = fieldClone.render();
+                fieldContainer.appendChild(fieldElement);
+    
                 row.appendChild(fieldContainer);
             });
-
+    
+            // Os controles de add/remove continuam iguais
             const controls = document.createElement('div');
             controls.classList.add('grid-form-row-controls');
-
+    
             if (this.rows < this.maxRows) {
                 const addBtn = document.createElement('button');
                 addBtn.textContent = '+';
@@ -69,7 +97,7 @@ class GridFormComponent {
                 addBtn.addEventListener('click', () => this.addRowAtPosition(i + 1, container));
                 controls.appendChild(addBtn);
             }
-
+    
             if (this.rows > 1) {
                 const removeBtn = document.createElement('button');
                 removeBtn.textContent = '-';
@@ -78,11 +106,11 @@ class GridFormComponent {
                 removeBtn.addEventListener('click', () => this.removeRow(i, container));
                 controls.appendChild(removeBtn);
             }
-
+    
             row.appendChild(controls);
             container.appendChild(row);
         }
-    }
+    }    
 
     cloneFieldData(originalField, rowIndex) {
         // Cria uma cópia profunda dos dados do campo
@@ -107,22 +135,33 @@ class GridFormComponent {
 
     removeRow(index, container) {
         if (this.rows <= 1) return;
-
+    
+        const rowToRemove = container.querySelector(`.grid-form-row[data-row-index="${index}"]`);
+        if (rowToRemove) {
+            container.removeChild(rowToRemove);
+        }
+    
         this.rows--;
-        this.renderRows(container);
-
-        // Restaura controles se estava no máximo
-        if (this.rows < this.maxRows) {
-            const controls = container.parentElement.querySelector('.grid-controls');
-            if (controls && !controls.querySelector('.grid-add-row')) {
-                const addButton = document.createElement('button');
-                addButton.textContent = '+';
-                addButton.classList.add('grid-add-row');
-                addButton.addEventListener('click', () => this.addRow(container));
-                controls.appendChild(addButton);
-            }
+    
+        const rows = container.querySelectorAll('.grid-form-row');
+        rows.forEach((row, newIndex) => {
+            row.dataset.rowIndex = newIndex;
+    
+            row.querySelectorAll('input, select, textarea').forEach(input => {
+                input.name = input.name.replace(/\[\d+\]/, `[${newIndex}]`);
+            });
+        });
+    
+        const controls = container.parentElement.querySelector('.grid-controls');
+        if (controls && !controls.querySelector('.grid-add-row')) {
+            const addButton = document.createElement('button');
+            addButton.textContent = '+';
+            addButton.classList.add('grid-add-row');
+            addButton.addEventListener('click', () => this.addRow(container));
+            controls.appendChild(addButton);
         }
     }
+    
 
     addRowAtPosition(position, container) {
         if (this.rows >= this.maxRows) return;
