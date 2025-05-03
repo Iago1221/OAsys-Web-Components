@@ -8,8 +8,8 @@ class SuggestFieldComponent {
         this.descriptionFieldName = data.SuggestFieldComponent.descriptionField.field;
 
         if (data.SuggestFieldComponent.clone) {
-            data.SuggestFieldComponent.idField.field = this.field.slice(0, -1)  + '\/' + data.SuggestFieldComponent.idField.field + ']';
-            data.SuggestFieldComponent.descriptionField.field = this.field.slice(0, -1)  + '\/' + data.SuggestFieldComponent.descriptionField.field + ']';
+            data.SuggestFieldComponent.idField.field = this.field  + '[' + data.SuggestFieldComponent.idField.field + ']';
+            data.SuggestFieldComponent.descriptionField.field = this.field  + '[' + data.SuggestFieldComponent.descriptionField.field + ']';
         } else {
             data.SuggestFieldComponent.idField.field = this.field  + '/' + data.SuggestFieldComponent.idField.field;
             data.SuggestFieldComponent.descriptionField.field = this.field  + '/' + data.SuggestFieldComponent.descriptionField.field;    
