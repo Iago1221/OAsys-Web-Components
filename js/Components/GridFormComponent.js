@@ -73,9 +73,22 @@ class GridFormComponent {
     
                 const savedRow = savedValues[i];
                 if (savedRow) {
-                    const savedValue = savedRow[fieldClone.field];
-                    if (savedValue !== undefined) {
-                        fieldClone.value = savedValue;
+                    if (fieldClone instanceof SuggestFieldComponent) {
+                        const idValue = savedRow[fieldClone.idField.field];
+                        const descriptionValue = savedRow[fieldClone.descriptionField.field];
+                        
+                        if (idValue) {
+                            fieldClone.idField.value = idValue;
+                        }
+
+                        if (descriptionValue) {
+                            fieldClone.descriptionField.value = descriptionValue;
+                        }
+                    } else {
+                        const savedValue = savedRow[fieldClone.field];
+                        if (savedValue !== undefined) {
+                            fieldClone.value = savedValue;
+                        }   
                     }
                 }
 
@@ -92,6 +105,7 @@ class GridFormComponent {
             if (this.rows < this.maxRows) {
                 const addBtn = document.createElement('button');
                 addBtn.textContent = '+';
+                addBtn.type = 'button';
                 addBtn.classList.add('grid-form-add-btn');
                 addBtn.title = 'Adicionar linha abaixo';
                 addBtn.addEventListener('click', () => this.addRowAtPosition(i + 1, container));
@@ -101,6 +115,7 @@ class GridFormComponent {
             if (this.rows > 1) {
                 const removeBtn = document.createElement('button');
                 removeBtn.textContent = '-';
+                removeBtn.type = 'button';
                 removeBtn.classList.add('grid-form-remove-btn');
                 removeBtn.title = 'Remover esta linha';
                 removeBtn.addEventListener('click', () => this.removeRow(i, container));
@@ -117,7 +132,7 @@ class GridFormComponent {
         const clonedData = JSON.parse(JSON.stringify(originalField));
         clonedData.field = `${this.name}[${rowIndex}][${clonedData.field}]`;
         clonedData.clone = true;
-        
+
         return {component: clonedData.component, [clonedData.component]: clonedData};
     }
 
@@ -134,7 +149,7 @@ class GridFormComponent {
         }
     }
 
-    removeRow(index, container) {
+    removeRow(index, container) {        
         if (this.rows <= 1) return;
     
         const rowToRemove = container.querySelector(`.grid-form-row[data-row-index="${index}"]`);

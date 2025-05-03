@@ -698,6 +698,7 @@ tr:hover {
     display: flex;
     gap: 8px;
     margin-left: auto;
+    margin-top: 1rem;
     flex-shrink: 0;
 }
 
