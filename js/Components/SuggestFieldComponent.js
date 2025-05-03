@@ -1,8 +1,17 @@
 class SuggestFieldComponent {
     constructor(data) {
         this.component = 'SuggestFieldComponent';
-        this.field = data.SuggestFieldComponent.name;
+        this.field = data.SuggestFieldComponent.field;
         this.route = data.SuggestFieldComponent.route;
+        
+        if (data.SuggestFieldComponent.clone) {
+            data.SuggestFieldComponent.idField.field = this.field.slice(0, -1)  + '/' + data.SuggestFieldComponent.idField.field + ']';
+            data.SuggestFieldComponent.descriptionField.field = this.field.slice(0, -1)  + '/' + data.SuggestFieldComponent.descriptionField.field + ']';
+        } else {
+            data.SuggestFieldComponent.idField.field = this.field  + '/' + data.SuggestFieldComponent.idField.field;
+            data.SuggestFieldComponent.descriptionField.field = this.field  + '/' + data.SuggestFieldComponent.descriptionField.field;    
+        }
+        
         this.idField = new FormFieldComponent(data.SuggestFieldComponent.idField);
         this.descriptionField = new FormFieldComponent(data.SuggestFieldComponent.descriptionField);
         this.label = data.SuggestFieldComponent.label;
