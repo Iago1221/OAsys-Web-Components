@@ -4,6 +4,9 @@ class SuggestFieldComponent {
         this.field = data.SuggestFieldComponent.field;
         this.route = data.SuggestFieldComponent.route;
         
+        this.fieldName = data.SuggestFieldComponent.idField.field;
+        this.descriptionFieldName = data.SuggestFieldComponent.descriptionField.field;
+
         if (data.SuggestFieldComponent.clone) {
             data.SuggestFieldComponent.idField.field = this.field.slice(0, -1)  + '/' + data.SuggestFieldComponent.idField.field + ']';
             data.SuggestFieldComponent.descriptionField.field = this.field.slice(0, -1)  + '/' + data.SuggestFieldComponent.descriptionField.field + ']';
@@ -16,9 +19,6 @@ class SuggestFieldComponent {
         this.descriptionField = new FormFieldComponent(data.SuggestFieldComponent.descriptionField);
         this.label = data.SuggestFieldComponent.label;
         this.bDisabled = data.SuggestFieldComponent.disabled;
-
-        this.fieldName = this.idField.field.replace(this.field + '\/', '');
-        this.descriptionFieldName = this.descriptionField.field.replace(this.field + '\/', '');
 
         if (this.bDisabled) {
             this.idField.disabled = true;
